@@ -374,6 +374,7 @@ dmesg=NO
 quota=NO
 ldconfig=NO 
 modules=NO
+certctl_init=YES
 ppp=NO
 syslogd=NO
 cron=NO
