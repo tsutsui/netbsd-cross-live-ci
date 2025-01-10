@@ -50,9 +50,9 @@ runs:
         NETBSDSRCDIR=$HOME/netbsd-src
         TOOLDIR=$NETBSDSRCDIR/tooldir.${{ inputs.machine }}
         IMAGE=$HOME/netbsd-${{ inputs.release }}-${{ inputs.machine }}.img
-        PREPARE_CMD=${{ inputs.prepare }}
-        CONFIGURE_CMD=${{ inputs.configure }}
-        BUILD_CMD=${{ inputs.build }}
+        PREPARE_CMD="${{ inputs.prepare }}"
+        CONFIGURE_CMD="${{ inputs.configure }}"
+        BUILD_CMD="${{ inputs.build }}"
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
