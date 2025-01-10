@@ -41,6 +41,7 @@ echo "start simh and wait for NetBSD to reach multi-user mode"
 echo "boot dua0" | ${SIMH_BIN} ${SIMH_BOOT} > simh.log 2>&1 &
 TIMEOUT=600
 INTERVAL=5
+SECONDS=0
 while true; do
   if grep -q "^login:" simh.log; then
     cat simh.log
