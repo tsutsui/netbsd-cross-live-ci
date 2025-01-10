@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/env bash
 #
 # Copyright (c) 2025 Izumi Tsutsui.
 # All rights reserved.
