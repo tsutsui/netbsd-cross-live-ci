@@ -457,6 +457,7 @@ if [ ! -z "${GITHUB_WORKSPACE}" ] && [ -d ${GITHUB_WORKSPACE} ]; then
 	    --exclude _PipelineMapping --exclude _temp -cf - work | \
 	    (cd ${TARGETROOTDIR}${HOSTHOME}; ${TAR} -xf -) )
 	cat >> ${WORKSPEC} <<EOF
+./home type=dir uname=root gname=wheel mode=0755
 .${HOME} type=dir uname=root gname=wheel mode=0755
 .${HOME}/work type=dir uname=root gname=wheel mode=0755
 EOF
