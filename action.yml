@@ -42,7 +42,6 @@ runs:
     - name: Set environment variables
       shell: bash
       run: |
-        cat >> $GITHUB_ENV <<EOF
         MACHINE=${{ inputs.machine }}
         RELEASE=${{ inputs.release }}
         FTPHOST=${{ inputs.ftphost }}
@@ -53,6 +52,17 @@ runs:
         PREPARE_CMD="${{ inputs.prepare }}"
         CONFIGURE_CMD="${{ inputs.configure }}"
         BUILD_CMD="${{ inputs.build }}"
+        cat >> $GITHUB_ENV <<EOF
+        MACHINE=$MACHINE
+        RELEASE=$RELEASE
+        FTPHOST=$FTPHOST
+        RELEASEDIR=$RELEASEDIR
+        NETBSDSRCDIR=$NETBSDSRCDIR
+        TOOLDIR=$TOOLDIR
+        IMAGE=$IMAGE
+        PREPARE_CMD="$PREPARE_CMD"
+        CONFIGURE_CMD="$CONFIGURE_CMD"
+        BUILD_CMD="$BUILD_CMD"
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
