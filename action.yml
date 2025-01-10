@@ -125,7 +125,7 @@ runs:
     - name: Create a NetBSD image
       shell: bash
       run: |
-        sh scripts/mkliveimage.sh
+        sh ${GITHUB_ACTION_PATH}/scripts/mkliveimage.sh
 
     - name: Boot NetBSD on emulator and wait for multi-user mode
       shell: bash
@@ -133,7 +133,7 @@ runs:
         echo "Booting NetBSD on the emulator..."
         case "${MACHINE}" in
         vax)
-          sh scripts/start-simh.sh
+          sh ${GITHUB_ACTION_PATH}/scripts/start-simh.sh
           ;;
         *)
           echo "Booting NetBSD for target ${MACHINE} is not supported (yet)."
