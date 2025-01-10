@@ -50,9 +50,6 @@ runs:
         NETBSDSRCDIR=$HOME/netbsd-src
         TOOLDIR=$NETBSDSRCDIR/tooldir.${{ inputs.machine }}
         IMAGE=$HOME/netbsd-${{ inputs.release }}-${{ inputs.machine }}.img
-        PREPARE_CMD="${{ inputs.prepare }}"
-        CONFIGURE_CMD="${{ inputs.configure }}"
-        BUILD_CMD="${{ inputs.build }}"
         cat >> $GITHUB_ENV <<EOF
         HOSTHOME=$HOME
         MACHINE=$MACHINE
@@ -62,9 +59,6 @@ runs:
         NETBSDSRCDIR=$NETBSDSRCDIR
         TOOLDIR=$TOOLDIR
         IMAGE=$IMAGE
-        PREPARE_CMD="$PREPARE_CMD"
-        CONFIGURE_CMD="$CONFIGURE_CMD"
-        BUILD_CMD="$BUILD_CMD"
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
@@ -155,9 +149,9 @@ runs:
         set -e	# Exit on error
         cd $GITHUB_WORKSPACE
         echo "Running preparation command..."
-        $PREPARE_CMD
+        ${{ inputs.prepare }}"
         echo "Running configure command..."
-        $CONFIGURE_CMD
+        ${{ inputs.configure }}
         echo "Running build command..."
-        $BUILD_CMD
+        ${{ inputs.build }}
         EOF
