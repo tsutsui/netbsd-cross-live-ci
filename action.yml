@@ -29,6 +29,7 @@ runs:
   using: "composite"
   steps:
     - name: Update host packages
+      shell: bash
       run: |
         sudo apt-get purge firefox || true
         sudo apt-get autoremove -y
@@ -39,6 +40,7 @@ runs:
     - uses: actions/checkout@v4
 
     - name: Set environment variables
+      shell: bash
       run: |
         cat >> $GITHUB_ENV <<EOF
         MACHINE=${{ inputs.machine }}
@@ -54,6 +56,7 @@ runs:
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
+      shell: bash
       run: |
         SRCSETS="gnusrc sharesrc src syssrc"
         for SET in $SRCSETS; do
@@ -66,6 +69,7 @@ runs:
         (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE -U -u -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
     - name: Prepare emulator and environment
+      shell: bash
       run: |
         cd $HOME
         case "${MACHINE}" in
@@ -112,11 +116,13 @@ runs:
         esac 
 
     - name: Create a NetBSD image
+      shell: bash
       run: |
         HOSTHOME=$HOME
         sh scripts/mkliveimage.sh
 
     - name: Boot NetBSD on emulator and wait for multi-user mode
+      shell: bash
       run: |
         echo "Booting NetBSD on the emulator..."
         cd $HOME
@@ -132,6 +138,7 @@ runs:
         esac 
 
     - name: Build project in NetBSD environment
+      shell: bash
       run: |
         echo "Building the project on NetBSD using the emulator..."
         ssh -p $SSH_PORT root@localhost <<EOF
