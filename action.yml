@@ -136,10 +136,9 @@ runs:
       shell: bash
       run: |
         echo "Booting NetBSD on the emulator..."
-        cd $HOME
         case "${MACHINE}" in
         vax)
-          sh start-simh.sh
+          sh scripts/start-simh.sh
           ;;
         *)
           echo "Booting NetBSD for target ${MACHINE} is not supported (yet)."
