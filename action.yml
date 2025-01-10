@@ -42,6 +42,7 @@ runs:
     - name: Set environment variables
       shell: bash
       run: |
+        HOSTHOME=$HOME
         MACHINE=${{ inputs.machine }}
         RELEASE=${{ inputs.release }}
         FTPHOST=${{ inputs.ftphost }}
@@ -53,6 +54,7 @@ runs:
         CONFIGURE_CMD="${{ inputs.configure }}"
         BUILD_CMD="${{ inputs.build }}"
         cat >> $GITHUB_ENV <<EOF
+        HOSTHOME=$HOME
         MACHINE=$MACHINE
         RELEASE=$RELEASE
         FTPHOST=$FTPHOST
@@ -128,7 +130,6 @@ runs:
     - name: Create a NetBSD image
       shell: bash
       run: |
-        HOSTHOME=$HOME
         sh scripts/mkliveimage.sh
 
     - name: Boot NetBSD on emulator and wait for multi-user mode
@@ -136,7 +137,6 @@ runs:
       run: |
         echo "Booting NetBSD on the emulator..."
         cd $HOME
-        HOSTHOME=$HOME
         case "${MACHINE}" in
         vax)
           sh start-simh.sh
