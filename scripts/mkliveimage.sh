@@ -451,6 +451,10 @@ cat >> ${WORKSPEC} <<EOF
 ./root/.ssh/authorized_keys type=file uname=root gname=wheel  mode=0600
 EOF
 
+echo "Enable PKG_PATH in dot files..."
+${TOOL_SED} -i -e "/^#export PKG_PATH/ s/^#//" ${TARGETROOTDIR}/root/.profile
+${TOOL_SED} -i -e "/^#setenv PKG_PATH/ s/^#//" ${TARGETROOTDIR}/root/.cshrc
+
 if [ ! -z "${GITHUB_WORKSPACE}" ] && [ -d ${GITHUB_WORKSPACE} ]; then
 	echo "Copying ${GITHUB_WORKSPACE} files to target image..."
 	mkdir -p ${TARGETROOTDIR}${HOSTHOME}
