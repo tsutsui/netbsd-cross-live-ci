@@ -31,6 +31,7 @@ runs:
     - name: Update host packages
       shell: bash
       run: |
+        echo "Update host packages"
         sudo apt-get purge firefox || true
         sudo apt-get autoremove -y
         sudo apt-get update -q
@@ -42,6 +43,7 @@ runs:
     - name: Set environment variables
       shell: bash
       run: |
+        echo "Set environment variables"
         HOSTHOME=$HOME
         MACHINE=${{ inputs.machine }}
         RELEASE=${{ inputs.release }}
@@ -64,6 +66,7 @@ runs:
     - name: Fetch NetBSD sources and build cross toolchains
       shell: bash
       run: |
+        echo "Fetch NetBSD sources and build cross toolchains"
         SRCSETS="gnusrc sharesrc src syssrc"
         for SET in $SRCSETS; do
           echo "Downloading and extracting $SET.tgz..."
@@ -77,6 +80,7 @@ runs:
     - name: Prepare emulator and environment
       shell: bash
       run: |
+        echo "Prepare emulator and environment"
         cd $HOME
         case "${MACHINE}" in
         vax)
@@ -125,6 +129,7 @@ runs:
     - name: Create a NetBSD image
       shell: bash
       run: |
+        echo "Create a NetBSD image"
         sh ${GITHUB_ACTION_PATH}/scripts/mkliveimage.sh
 
     - name: Boot NetBSD on emulator and wait for multi-user mode
