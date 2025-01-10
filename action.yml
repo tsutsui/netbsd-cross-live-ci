@@ -95,27 +95,27 @@ runs:
           SIMH_BIN=$HOME/simh/BIN/microvax3900
           SIMH_BOOT=$HOME/simh-boot-netbsd-vax
           cat >> $GITHUB_ENV <<EOF
-          SSH_PORT=$SSH_PORT
-          HOST_IP=$HOST_IP
-          GUEST_IP=$GUEST_IP
-          SIMH_BIN=$SIMH_BIN
-          SIMH_BOOT=$SIMH_BOOT
-          EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        SIMH_BIN=$SIMH_BIN
+        SIMH_BOOT=$SIMH_BOOT
+        EOF
           cat > $SIMH_BOOT <<EOF
-          set cpu 256m
-          set nothrottle
-          set rq0 ra92
-          set rq1 disable
-          set rq2 disable
-          set rq3 disable
-          set tq0 disable
-          set tq1 disable
-          set tq2 disable
-          set tq3 disable
-          attach rq0 $IMAGE
-          attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
-          expect '>>>' send 'boot dua0\r'; continue
-          EOF
+        set cpu 256m
+        set nothrottle
+        set rq0 ra92
+        set rq1 disable
+        set rq2 disable
+        set rq3 disable
+        set tq0 disable
+        set tq1 disable
+        set tq2 disable
+        set tq3 disable
+        attach rq0 $IMAGE
+        attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
+        expect '>>>' send 'boot dua0\r'; continue
+        EOF
           echo "Generated simh startup file:"
           cat $SIMH_BOOT
           ;;
