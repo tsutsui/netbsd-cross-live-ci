@@ -22,7 +22,7 @@ jobs:
          release: "10.1"
 
          prepare: |
-           PKG_PATH=https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r)/All
+           PKG_PATH=https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$MACHINE/$RELEASE/All
            pkg_add -uv tcsh
 
          configure: |
