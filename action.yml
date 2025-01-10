@@ -149,7 +149,7 @@ runs:
         set -e	# Exit on error
         cd $GITHUB_WORKSPACE
         echo "Running preparation command..."
-        ${{ inputs.prepare }}"
+        ${{ inputs.prepare }}
         echo "Running configure command..."
         ${{ inputs.configure }}
         echo "Running build command..."
