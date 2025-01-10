@@ -41,6 +41,7 @@ echo "start simh and wait for NetBSD to reach multi-user mode"
 echo "boot dua0" | ${SIMH_BIN} ${SIMH_BOOT} > simh.log 2>&1 &
 TIMEOUT=600
 INTERVAL=5
+WAITSECONDS=0
 while true; do
   if grep -q "^login:" simh.log; then
     cat simh.log
@@ -48,11 +49,12 @@ while true; do
     echo "NetBSD/vax on simh is ready"
     break
   fi
-  if [ "$SECONDS" -ge "$TIMEOUT" ]; then
+  if [ "$WAITSECONDS" -ge "$TIMEOUT" ]; then
     echo "Timeout: simh doesn't start properly"
     cat simh.log
     exit 1
   fi
   sleep $INTERVAL
-  echo "waiting simh to reach multi-user ($SECONDS s)"
+  WAITSECONDS=$(($WAITSECONDS + $INTERVAL))
+  echo "waiting simh to reach multi-user ($WAITSECONDS s)"
 done

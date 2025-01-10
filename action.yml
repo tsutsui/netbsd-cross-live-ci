@@ -29,6 +29,7 @@ runs:
   using: "composite"
   steps:
     - name: Update host packages
+      shell: bash
       run: |
         sudo apt-get purge firefox || true
         sudo apt-get autoremove -y
@@ -39,8 +40,9 @@ runs:
     - uses: actions/checkout@v4
 
     - name: Set environment variables
+      shell: bash
       run: |
-        cat >> $GITHUB_ENV <<EOF
+        HOSTHOME=$HOME
         MACHINE=${{ inputs.machine }}
         RELEASE=${{ inputs.release }}
         FTPHOST=${{ inputs.ftphost }}
@@ -48,12 +50,19 @@ runs:
         NETBSDSRCDIR=$HOME/netbsd-src
         TOOLDIR=$NETBSDSRCDIR/tooldir.${{ inputs.machine }}
         IMAGE=$HOME/netbsd-${{ inputs.release }}-${{ inputs.machine }}.img
-        PREPARE_CMD=${{ inputs.prepare }}
-        CONFIGURE_CMD=${{ inputs.configure }}
-        BUILD_CMD=${{ inputs.build }}
+        cat >> $GITHUB_ENV <<EOF
+        HOSTHOME=$HOME
+        MACHINE=$MACHINE
+        RELEASE=$RELEASE
+        FTPHOST=$FTPHOST
+        RELEASEDIR=$RELEASEDIR
+        NETBSDSRCDIR=$NETBSDSRCDIR
+        TOOLDIR=$TOOLDIR
+        IMAGE=$IMAGE
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
+      shell: bash
       run: |
         SRCSETS="gnusrc sharesrc src syssrc"
         for SET in $SRCSETS; do
@@ -66,6 +75,7 @@ runs:
         (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE -U -u -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
     - name: Prepare emulator and environment
+      shell: bash
       run: |
         cd $HOME
         case "${MACHINE}" in
@@ -81,27 +91,28 @@ runs:
           SIMH_BIN=$HOME/simh/BIN/microvax3900
           SIMH_BOOT=$HOME/simh-boot-netbsd-vax
           cat >> $GITHUB_ENV <<EOF
-          SSH_PORT=$SSH_PORT
-          HOST_IP=$HOST_IP
-          GUEST_IP=$GUEST_IP
-          SIMH_BIN=$SIMH_BIN
-          SIMH_BOOT=$SIMH_BOOT
-          EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        SIMH_BIN=$SIMH_BIN
+        SIMH_BOOT=$SIMH_BOOT
+        EOF
           cat > $SIMH_BOOT <<EOF
-          set cpu 256m
-          set nothrottle
-          set rq0 ra92
-          set rq1 disable
-          set rq2 disable
-          set rq3 disable
-          set tq0 disable
-          set tq1 disable
-          set tq2 disable
-          set tq3 disable
-          attach rq0 $IMAGE
-          attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
-          expect '>>>' send 'boot dua0\r'; continue
-          EOF
+        set cpu 256m
+        set nothrottle
+        set rq0 ra92
+        set rq1 disable
+        set rq2 disable
+        set rq3 disable
+        set tq0 disable
+        set tq1 disable
+        set tq2 disable
+        set tq3 disable
+        attach rq0 $IMAGE
+        attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
+        expect '>>>' send 'boot dua0\r'; continue
+        boot cpu
+        EOF
           echo "Generated simh startup file:"
           cat $SIMH_BOOT
           ;;
@@ -112,18 +123,17 @@ runs:
         esac 
 
     - name: Create a NetBSD image
+      shell: bash
       run: |
-        HOSTHOME=$HOME
         sh scripts/mkliveimage.sh
 
     - name: Boot NetBSD on emulator and wait for multi-user mode
+      shell: bash
       run: |
         echo "Booting NetBSD on the emulator..."
-        cd $HOME
-        HOSTHOME=$HOME
         case "${MACHINE}" in
         vax)
-          sh start-simh.sh
+          sh scripts/start-simh.sh
           ;;
         *)
           echo "Booting NetBSD for target ${MACHINE} is not supported (yet)."
@@ -132,15 +142,16 @@ runs:
         esac 
 
     - name: Build project in NetBSD environment
+      shell: bash
       run: |
         echo "Building the project on NetBSD using the emulator..."
         ssh -p $SSH_PORT root@localhost <<EOF
         set -e	# Exit on error
         cd $GITHUB_WORKSPACE
         echo "Running preparation command..."
-        $PREPARE_CMD
+        ${{ inputs.prepare }}
         echo "Running configure command..."
-        $CONFIGURE_CMD
+        ${{ inputs.configure }}
         echo "Running build command..."
-        $BUILD_CMD
+        ${{ inputs.build }}
         EOF

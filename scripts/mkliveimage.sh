@@ -374,6 +374,7 @@ dmesg=NO
 quota=NO
 ldconfig=NO 
 modules=NO
+certctl_init=YES
 ppp=NO
 syslogd=NO
 cron=NO
@@ -450,6 +451,10 @@ cat >> ${WORKSPEC} <<EOF
 ./root/.ssh/authorized_keys type=file uname=root gname=wheel  mode=0600
 EOF
 
+echo "Enable PKG_PATH in dot files..."
+${TOOL_SED} -i -e "/^#export PKG_PATH/ s/^#//" ${TARGETROOTDIR}/root/.profile
+${TOOL_SED} -i -e "/^#setenv PKG_PATH/ s/^#//" ${TARGETROOTDIR}/root/.cshrc
+
 if [ ! -z "${GITHUB_WORKSPACE}" ] && [ -d ${GITHUB_WORKSPACE} ]; then
 	echo "Copying ${GITHUB_WORKSPACE} files to target image..."
 	mkdir -p ${TARGETROOTDIR}${HOSTHOME}
@@ -457,6 +462,7 @@ if [ ! -z "${GITHUB_WORKSPACE}" ] && [ -d ${GITHUB_WORKSPACE} ]; then
 	    --exclude _PipelineMapping --exclude _temp -cf - work | \
 	    (cd ${TARGETROOTDIR}${HOSTHOME}; ${TAR} -xf -) )
 	cat >> ${WORKSPEC} <<EOF
+./home type=dir uname=root gname=wheel mode=0755
 .${HOME} type=dir uname=root gname=wheel mode=0755
 .${HOME}/work type=dir uname=root gname=wheel mode=0755
 EOF
