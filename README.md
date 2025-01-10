@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build project in NetBSD environment
-        uses: tsutsui/netbsd-cross-live-ci@v1
+        uses: tsutsui/netbsd-cross-live-ci@v0.0.1
         with:
           machine: "vax"
           release: "10.1"
