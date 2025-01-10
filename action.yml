@@ -117,6 +117,7 @@ runs:
         attach rq0 $IMAGE
         attach xq nat:tcp=${SSH_PORT}:${GUEST_IP}:22
         expect '>>>' send 'boot dua0\r'; continue
+        boot cpu
         EOF
           echo "Generated simh startup file:"
           cat $SIMH_BOOT
