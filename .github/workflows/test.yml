@@ -21,11 +21,8 @@ jobs:
          machine: "vax"
          release: "10.1"
 
-         prepare: |
-           PKG_PATH=https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r)/All pkg_add -uv tcsh
+         prepare: "PKG_PATH=https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/$(uname -p)/$(uname -r)/All pkg_add -uv tcsh"
 
-         configure: |
-           pwd
+         configure: "pwd"
 
-         build: |
-           uname -a && sysctl hw.model && ls -lR /home/runner
+         build: "uname -a && sysctl hw.model && ls -lR /home/runner"
