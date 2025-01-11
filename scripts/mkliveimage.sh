@@ -71,6 +71,7 @@ amd64)
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootx64.efi bootia32.efi"
+ INSTALLBOOTOPTIONS="-v -o console=com0"	# to use serial console
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
@@ -84,8 +85,8 @@ i386)
  SUFFIX_SETS=tgz
  EXTRA_SETS= # nothing
  RAW_PART=3		# raw partition is d:
- USE_MBR=yes
- #USE_MBR=no
+ #USE_MBR=yes
+ USE_MBR=no
  #USE_GPT=yes
  #USE_GPTMBR=yes
  OMIT_SWAPIMG=no	# include swap partition in output image for emulators
@@ -94,10 +95,13 @@ i386)
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootia32.efi"	# XXX: NetBSD/i386 doesn't provide bootx64.efi
+ INSTALLBOOTOPTIONS="-v -o console=com0"	# to use serial console
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
- #HOST_IP=		# XXX check qemu settings
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
+ fi
  ;;
 vax)
  MACHINE_ARCH=vax
@@ -113,6 +117,7 @@ vax)
  PRIMARY_BOOT=sdboot
  #SECONDARY_BOOT=boot	# /boot is in base.tgz
  #SECONDARY_BOOT_ARG= # nothing
+ INSTALLBOOTOPTIONS="-v"
  INSTALLBOOT_AFTER_DISKLABEL=yes
  VMHOSTNAME=microvax
  DISKNAME=netbsd-ci-${MACHINE}
@@ -123,6 +128,7 @@ vax)
 *)
 	echo "Unsupported MACHINE (${MACHINE})"
 	exit 1
+	;;
 esac
 
 if [ -z ${HOST_IP} ]; then
@@ -481,7 +487,7 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 
 if [ ${PRIMARY_BOOT}x != "x" ] && [ "${INSTALLBOOT_AFTER_DISKLABEL}x" != "yesx" ]; then
 echo "Installing bootstrap..."
-${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKFS} \
+${TOOL_INSTALLBOOT} ${INSTALLBOOTOPTIONS} -m ${MACHINE} ${WORKFS} \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG} \
     || err ${TOOL_INSTALLBOOT}
 fi
@@ -596,7 +602,7 @@ fi
 
 if [ ${PRIMARY_BOOT}x != "x" ] && [ "${INSTALLBOOT_AFTER_DISKLABEL}x" = "yesx" ]; then
 echo "Installing bootstrap..."
-${TOOL_INSTALLBOOT} -v -m ${MACHINE} ${WORKIMG} \
+${TOOL_INSTALLBOOT} ${INSTALLBOOTOPTIONS} -m ${MACHINE} ${WORKIMG} \
     ${TARGETROOTDIR}/usr/mdec/${PRIMARY_BOOT} ${SECONDARY_BOOT_ARG} \
     || err ${TOOL_INSTALLBOOT}
 fi
