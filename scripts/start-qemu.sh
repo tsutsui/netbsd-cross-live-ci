@@ -51,10 +51,12 @@ if [ ! -x "$(which ${QEMU_BIN})" ]; then
 fi
 
 QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=virtio,index=0,media=disk,format=raw,cache=unsafe -net nic,model=virtio -net user,hostfwd=tcp::${SSH_PORT}-:22"
-BOOTLOG="qemu.log"
+
+EMULATOR=qemu
+BOOTLOG="${EMULATOR}.log"
 
 cd $HOSTHOME
-echo "start qemu and wait for NetBSD to reach multi-user mode"
+echo "start $EMULATOR and wait for NetBSD to reach multi-user mode"
 ${QEMU_BIN} ${QEMU_OPT} > $BOOTLOG 2>&1 &
 TIMEOUT=120
 INTERVAL=5
@@ -63,15 +65,15 @@ while true; do
   if grep -q "^login:" $BOOTLOG; then
     cat $BOOTLOG
     echo
-    echo "NetBSD/$MACHINE on qemu is ready"
+    echo "NetBSD/$MACHINE on $EMULATOR is ready"
     break
   fi
   if [ "$WAITSECONDS" -ge "$TIMEOUT" ]; then
-    echo "Timeout: qemu doesn't start properly"
+    echo "Timeout: $EMULATOR doesn't start properly"
     cat $BOOTLOG
     exit 1
   fi
   sleep $INTERVAL
   WAITSECONDS=$(($WAITSECONDS + $INTERVAL))
-  echo "waiting simh to reach multi-user ($WAITSECONDS s)"
+  echo "waiting $EMULATOR to reach multi-user ($WAITSECONDS s)"
 done
