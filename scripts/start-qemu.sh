@@ -56,7 +56,7 @@ BOOTLOG="qemu.log"
 cd $HOSTHOME
 echo "start qemu and wait for NetBSD to reach multi-user mode"
 ${QEMU_BIN} ${QEMU_OPT} > $BOOTLOG 2>&1 &
-TIMEOUT=600
+TIMEOUT=120
 INTERVAL=5
 WAITSECONDS=0
 while true; do
