@@ -350,7 +350,7 @@ if [ "${USE_GPT}" = "yes" ]; then
 		-e "s/ROOT.b/NAME=${GPTSWAPLABEL}/"			\
 		${WORKFSTAB}
 fi
-${CP} ${WORKFSTAB}  ${TARGETROOTDIR}/etc/fstab
+${CP} ${WORKFSTAB} ${TARGETROOTDIR}/etc/fstab
 
 echo "Setting liveimage specific configurations in /etc/rc.conf..."
 ${CAT} ${TARGETROOTDIR}/etc/rc.conf | \
@@ -372,7 +372,7 @@ savecore=NO
 #update_motd=NO
 dmesg=NO
 quota=NO
-ldconfig=NO 
+ldconfig=NO
 modules=NO
 certctl_init=YES
 ppp=NO
@@ -511,7 +511,7 @@ fi
 
 echo "Copying target disk image..."
 rm -f ${WORKIMG}
-if [ "${USE_MBR}" != "yes" ] && [ "${USE_GPT}" != "yes" ] &&  [ "$SWAPMB" = "0" ]; then
+if [ "${USE_MBR}" != "yes" ] && [ "${USE_GPT}" != "yes" ] && [ "$SWAPMB" = "0" ]; then
 	# no need to concatinate images
 	mv ${WORKFS} ${WORKIMG}
 else
@@ -548,7 +548,7 @@ fi
 if [ "${USE_GPT}" = "yes" ]; then
 	echo "Finalize GPT entries..."
 	if [ "${USE_GPTMBR}" = "yes" ]; then
-	        ${TOOL_GPT} ${WORKIMG} biosboot -i 2 \
+		${TOOL_GPT} ${WORKIMG} biosboot -i 2 \
 		    -c ${TARGETROOT}/usr/mdec/gptmbr.bin || err ${TOOL_GPT}
 	fi
 	${TOOL_GPT} ${WORKIMG} set -a bootme -i 2 || err ${TOOL_GPT}
@@ -557,7 +557,7 @@ else
 	${CAT} > ${WORKLABEL} <<EOF
 type: ESDI
 disk: ${DISKNAME}
-label: 
+label:
 flags:
 bytes/sector: 512
 sectors/track: ${SECTORS}
@@ -569,9 +569,9 @@ rpm: 3600
 interleave: 1
 trackskew: 0
 cylinderskew: 0
-headswitch: 0           # microseconds
-track-to-track seek: 0  # microseconds
-drivedata: 0 
+headswitch: 0		# microseconds
+track-to-track seek: 0	# microseconds
+drivedata: 0
 
 8 partitions:
 #        size    offset     fstype [fsize bsize cpg/sgs]
