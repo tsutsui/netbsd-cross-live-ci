@@ -50,7 +50,7 @@ if [ ! -x "$(which ${QEMU_BIN})" ]; then
 	exit 1
 fi
 
-QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=virtio,index=0,media=disk,format=raw,cache=unsafe -nic user,hostfwd=tcp::${SSH_PORT}-:22:,model=virtio"
+QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=virtio,index=0,media=disk,format=raw,cache=unsafe -net nic,model=virtio -net user,hostfwd=tcp::${SSH_PORT}-:22"
 BOOTLOG="qemu.log"
 
 cd $HOSTHOME
