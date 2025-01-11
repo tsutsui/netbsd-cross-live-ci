@@ -23,38 +23,45 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z ${HOSTHOME} ]; then
+if [ -z "${HOSTHOME}" ]; then
 	echo "HOSTHOME is not set"
 	exit 1
 fi
-if [ -z ${SIMH_BOOT} ] || [ ! -f ${SIMH_BOOT} ]; then
+if [ -z "${SIMH_BOOT}" ] || [ ! -f "${SIMH_BOOT}" ]; then
 	echo "SIMH_BOOT is not set"
 	exit 1
 fi
-if [ -z ${SIMH_BIN} ]; then
+if [ -z "${SIMH_BIN}" ]; then
 	# for debug
 	SIMH_BIN=/usr/pkg/bin/simh-microvax3900
 fi
+if [ ! -x "$(which ${SIMH_BIN})" ]; then
+	echo "${SIMH_BIN} is not installed."
+	exit 1
+fi
+
+EMULATOR=simh
+BOOTLOG="${EMULATOR}.log"
 
 cd $HOSTHOME
-echo "start simh and wait for NetBSD to reach multi-user mode"
-echo "boot dua0" | ${SIMH_BIN} ${SIMH_BOOT} > simh.log 2>&1 &
+echo "start $EMULATOR and wait for NetBSD to reach multi-user mode"
+echo "boot dua0" | ${SIMH_BIN} ${SIMH_BOOT} > $BOOTLOG 2>&1 &
 TIMEOUT=600
 INTERVAL=5
 WAITSECONDS=0
 while true; do
-  if grep -q "^login:" simh.log; then
-    cat simh.log
+  if grep -q "^login:" $BOOTLOG; then
+    cat $BOOTLOG
     echo
-    echo "NetBSD/vax on simh is ready"
+    echo "NetBSD/$MACHINE on $EMULATOR is ready"
     break
   fi
   if [ "$WAITSECONDS" -ge "$TIMEOUT" ]; then
-    echo "Timeout: simh doesn't start properly"
-    cat simh.log
+    echo "Timeout: $EMULATOR doesn't start properly"
+    cat $BOOTLOG
     exit 1
   fi
   sleep $INTERVAL
   WAITSECONDS=$(($WAITSECONDS + $INTERVAL))
-  echo "waiting simh to reach multi-user ($WAITSECONDS s)"
+  echo "waiting $EMULATOR to reach multi-user ($WAITSECONDS s)"
 done
