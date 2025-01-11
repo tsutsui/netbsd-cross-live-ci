@@ -8,6 +8,8 @@ jobs:
   build-cross-live-ci:
     strategy:
       fail-fast: false
+      matrix:
+        machine: [i386, vax]
 
     runs-on: ubuntu-latest
 
@@ -18,7 +20,7 @@ jobs:
      - name: build an image and test ssh on NetBSD on emulator
        uses: ./
        with:
-         machine: "vax"
+         machine: "${{ matrix.machine }}"
          release: "10.1"
 
          prepare: |
