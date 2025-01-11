@@ -54,6 +54,32 @@ fi
 # target dependent info
 #
 case "${MACHINE}" in
+alpha)
+ MACHINE_ARCH=alpha
+ MACHINE_GNU_PLATFORM=alpha--netbsd		# for fdisk(8)
+ TARGET_ENDIAN=le
+ KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tgz
+ EXTRA_SETS= # nothing
+ RAW_PART=2		# raw partition is c:
+ #USE_MBR=yes
+ USE_MBR=no
+ #USE_GPT=yes
+ #USE_GPTMBR=yes
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ MAKEFSOPTIONS="-o version=2"
+ PRIMARY_BOOT=bootxx_ffsv2
+ SECONDARY_BOOT=boot
+ SECONDARY_BOOT_ARG= # nothing
+ INSTALLBOOTOPTIONS="-v"
+ INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemupc
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
+ fi
+ ;;
 amd64)
  MACHINE_ARCH=x86_64
  MACHINE_GNU_PLATFORM=x86_64--netbsd		# for fdisk(8)
@@ -191,7 +217,7 @@ SH=sh
 TAR=tar
 TOUCH=touch
 
-TARGETROOTDIR=$HOSTHOME/targetroot.${MACHINE}
+[ -z "${TARGETROOTDIR}" ] && TARGETROOTDIR=$HOSTHOME/targetroot.${MACHINE}
 WORKDIR=$HOSTHOME/work.${MACHINE}
 
 #
@@ -482,6 +508,7 @@ ${TOOL_MAKEFS} -M ${FSSIZE} -m ${FSSIZE} \
 	-B ${TARGET_ENDIAN} \
 	-F ${WORKSPEC} -N ${TARGETROOTDIR}/etc \
 	-o bsize=${BLOCKSIZE},fsize=${FRAGSIZE},density=${DENSITY} \
+	${MAKEFSOPTIONS} \
 	${WORKFS} ${TARGETROOTDIR} \
 	|| err ${TOOL_MAKEFS}
 

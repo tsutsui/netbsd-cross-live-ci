@@ -23,25 +23,38 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if [ -z "${HOSTHOME}" ]; then
+if [ -z "${HOSTHOME}" ] && [ ! -d "${HOSTHOME}" ]; then
 	echo "HOSTHOME is not set"
 	exit 1
 fi
-if [ -z "${QEMU_BIN}" ]; then
-	# for debug
-	case "${MACHINE}" in
-	i386)
-		QEMU_BIN=/usr/pkg/bin/qemu-system-i386
-		;;
-	amd64)
-		QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
-		;;
-	*)
-		echo "${MACHINE} is not supported"
-		exit 1
-		;;
-	esac
+if [ -z "${IMAGE}" ]; then
+	echo "IMAGE is not set"
+	exit 1
 fi
+	# for debug
+case "${MACHINE}" in
+alpha)
+	DRIVEIF="ide"
+	NETMODEL="e1000"
+	QEMU_MD_OPT="-kernel $TARGETROOTDIR/netbsd -append \"rootdev=/dev/wd0\""
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-alpha
+	;;
+i386)
+	DRIVEIF="virtio"
+	NETMODEL="virtio"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-i386
+	;;
+amd64)
+	DRIVEIF="virtio"
+	NETMODEL="virtio"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
+	;;
+*)
+	echo "MACHINE \"${MACHINE}\" is not supported"
+	exit 1
+	;;
+esac
+
 if [ -z "${SSH_PORT}" ]; then
 	SSH_PORT=10020
 fi
@@ -50,14 +63,14 @@ if [ ! -x "$(which ${QEMU_BIN})" ]; then
 	exit 1
 fi
 
-QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=virtio,index=0,media=disk,format=raw,cache=unsafe -net nic,model=virtio -net user,hostfwd=tcp::${SSH_PORT}-:22"
+QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe -net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
 
 EMULATOR=qemu
 BOOTLOG="${EMULATOR}.log"
 
 cd $HOSTHOME
 echo "start $EMULATOR and wait for NetBSD to reach multi-user mode"
-${QEMU_BIN} ${QEMU_OPT} > $BOOTLOG 2>&1 &
+${QEMU_BIN} ${QEMU_OPT} ${QEMU_MD_OPT} > $BOOTLOG 2>&1 &
 TIMEOUT=120
 INTERVAL=5
 WAITSECONDS=0

@@ -48,10 +48,11 @@ runs:
         MACHINE=${{ inputs.machine }}
         RELEASE=${{ inputs.release }}
         FTPHOST=${{ inputs.ftphost }}
-        RELEASEDIR=pub/NetBSD/NetBSD-${{ inputs.release }}
+        RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
         NETBSDSRCDIR=$HOME/netbsd-src
-        TOOLDIR=$NETBSDSRCDIR/tooldir.${{ inputs.machine }}
-        IMAGE=$HOME/netbsd-${{ inputs.release }}-${{ inputs.machine }}.img
+        TOOLDIR=$NETBSDSRCDIR/tooldir.${MACHINE}
+        IMAGE=$HOME/netbsd-${RELEASE}-${MACHINE}.img
+        TARGETROOTDIR=$HOME/targetroot.${MACHINE}
         cat >> $GITHUB_ENV <<EOF
         HOSTHOME=$HOME
         MACHINE=$MACHINE
@@ -61,6 +62,7 @@ runs:
         NETBSDSRCDIR=$NETBSDSRCDIR
         TOOLDIR=$TOOLDIR
         IMAGE=$IMAGE
+        TARGETROOTDIR=$TARGETROOTDIR
         EOF
 
     - name: Fetch NetBSD sources and build cross toolchains
@@ -83,6 +85,20 @@ runs:
         echo "Prepare emulator and environment"
         cd $HOME
         case "${MACHINE}" in
+        alpha)
+          echo "Installing qemu-system-alpha..."
+          sudo apt-get install -qy qemu-system-alpha
+          SSH_PORT=10020
+          HOST_IP=10.0.2.2
+          GUEST_IP=10.0.2.15
+          QEMU_BIN=qemu-system-alpha
+          cat >> $GITHUB_ENV <<EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        QEMU_BIN=$QEMU_BIN
+        EOF
+          ;;
         i386)
           echo "Installing qemu-system-i386..."
           sudo apt-get install -qy qemu-system-i386
@@ -151,7 +167,7 @@ runs:
       run: |
         echo "Booting NetBSD on the emulator..."
         case "${MACHINE}" in
-        i386)
+        alpha|i386)
           sh ${GITHUB_ACTION_PATH}/scripts/start-qemu.sh
           ;;
         vax)
