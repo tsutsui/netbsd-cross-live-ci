@@ -73,6 +73,7 @@ amd64)
  EFIBOOT="bootx64.efi bootia32.efi"
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
+ DISKNAME=netbsd-ci-${MACHINE}
  #HOST_IP=		# XXX check qemu settings
  ;;
 i386)
@@ -95,6 +96,7 @@ i386)
  EFIBOOT="bootia32.efi"	# XXX: NetBSD/i386 doesn't provide bootx64.efi
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
+ DISKNAME=netbsd-ci-${MACHINE}
  #HOST_IP=		# XXX check qemu settings
  ;;
 vax)
@@ -113,6 +115,7 @@ vax)
  #SECONDARY_BOOT_ARG= # nothing
  INSTALLBOOT_AFTER_DISKLABEL=yes
  VMHOSTNAME=microvax
+ DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
   HOST_IP=10.0.2.2	# simh NAT default
  fi
