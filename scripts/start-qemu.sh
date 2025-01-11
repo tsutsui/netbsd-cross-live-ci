@@ -45,6 +45,10 @@ fi
 if [ -z "${SSH_PORT}" ]; then
 	SSH_PORT=10020
 fi
+if [ ! -x "$(which ${QEMU_BIN})" ]; then
+	echo "${QEMU_BIN} is not installed."
+	exit 1
+fi
 
 QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=virtio,index=0,media=disk,format=raw,cache=unsafe -nic user,hostfwd=tcp::${SSH_PORT}-:22:,model=virtio"
 BOOTLOG="qemu.log"
