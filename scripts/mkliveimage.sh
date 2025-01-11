@@ -71,7 +71,7 @@ amd64)
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootx64.efi bootia32.efi"
- INSTALLBOOTOPTIONS="-v -o console=com0,timeout=1"	# to use serial console
+ INSTALLBOOTOPTIONS="-v -o console=com0"	# to use serial console
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
@@ -95,7 +95,7 @@ i386)
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootia32.efi"	# XXX: NetBSD/i386 doesn't provide bootx64.efi
- INSTALLBOOTOPTIONS="-v -o console=com0,timeout=1"	# to use serial console
+ INSTALLBOOTOPTIONS="-v -o console=com0"	# to use serial console
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
