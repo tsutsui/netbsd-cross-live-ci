@@ -40,9 +40,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Build project in NetBSD environment
         uses: tsutsui/netbsd-cross-live-ci@master
         with:
