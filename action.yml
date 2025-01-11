@@ -17,7 +17,7 @@ inputs:
     required: false
     default: "true"
   configure:
-    description: "Command to configure the the project on NetBSD."
+    description: "Command to configure the project on NetBSD."
     required: false
     default: "true"
   build:
