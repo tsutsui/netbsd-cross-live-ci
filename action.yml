@@ -151,7 +151,7 @@ runs:
       run: |
         echo "Building the project on NetBSD using the emulator..."
         ssh -p $SSH_PORT root@localhost <<EOF
-        set -e	# Exit on error
+        set -ex	# Exit on error and write each command to standard error
         cd $GITHUB_WORKSPACE
         echo "Running preparation command..."
         ${{ inputs.prepare }}
