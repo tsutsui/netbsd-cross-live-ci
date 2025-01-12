@@ -55,6 +55,12 @@ sparc)
 	NETMODEL="lance"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc
 	;;
+sparc64)
+	QEMU_MEM=256
+	DRIVEIF="ide"
+	NETMODEL="sunhme"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc64
+	;;
 *)
 	echo "MACHINE \"${MACHINE}\" is not supported"
 	exit 1

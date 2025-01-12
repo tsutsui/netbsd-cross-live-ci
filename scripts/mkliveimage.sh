@@ -151,6 +151,30 @@ sparc)
   HOST_IP=10.0.2.2	# simh NAT default
  fi
  ;;
+sparc64)
+ MACHINE_ARCH=sparc64
+ MACHINE_GNU_PLATFORM=sparc64--netbsd		# for fdisk(8)
+ TARGET_ENDIAN=be
+ KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tar.xz
+ EXTRA_SETS= # nothing
+ RAW_PART=2		# raw partition is c:
+ USE_MBR=no
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ MAKEFSOPTIONS="-o version=2"
+ USE_SUNLABEL=yes
+ PRIMARY_BOOT=bootblk
+ SECONDARY_BOOT=ofwboot
+ SECONDARY_BOOT_ARG=	# nothing
+ INSTALLBOOTOPTIONS="-v"
+ INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemusparc
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# simh NAT default
+ fi
+ ;;
 vax)
  MACHINE_ARCH=vax
  MACHINE_GNU_PLATFORM=vax--netbsdelf		# for fdisk(8)

@@ -139,6 +139,20 @@ runs:
         QEMU_BIN=$QEMU_BIN
         EOF
           ;;
+        sparc64)
+          echo "Installing qemu-system-sparc64..."
+          sudo apt-get install -qy qemu-system-sparc64
+          SSH_PORT=10020
+          HOST_IP=10.0.2.2
+          GUEST_IP=10.0.2.15
+          QEMU_BIN=qemu-system-sparc64
+          cat >> $GITHUB_ENV <<EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        QEMU_BIN=$QEMU_BIN
+        EOF
+          ;;
         vax)
           echo "Installing dependencies for simh..."
           sudo apt-get install -qy libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
@@ -193,7 +207,7 @@ runs:
       run: |
         echo "Booting NetBSD on the emulator..."
         case "${MACHINE}" in
-        alpha|i386|sparc)
+        alpha|i386|sparc|sparc64)
           sh ${GITHUB_ACTION_PATH}/scripts/start-qemu.sh
           ;;
         vax)

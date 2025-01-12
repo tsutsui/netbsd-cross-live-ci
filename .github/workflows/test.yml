@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        machine: [alpha, i386, sparc, vax]
+        machine: [alpha, i386, sparc, sparc64, vax]
 
     runs-on: ubuntu-latest
 
