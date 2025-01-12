@@ -46,6 +46,11 @@ runs:
         echo "Set environment variables"
         HOSTHOME=$HOME
         MACHINE=${{ inputs.machine }}
+        # check in case of "evbarm-aarch64" or "evbarm-earmv7hf" etc.
+        if [ "${MACHINE#*-}" != "${MACHINE}" ]; then
+          MACHINE_ARCH="${MACHINE#*-}"
+          MACHINE="${MACHINE%%-*}"
+        fi
         RELEASE=${{ inputs.release }}
         FTPHOST=${{ inputs.ftphost }}
         RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
@@ -64,6 +69,9 @@ runs:
         IMAGE=$IMAGE
         TARGETROOTDIR=$TARGETROOTDIR
         EOF
+        if [ ! -z "${MACHINE_ARCH}" ]; then
+          echo "MACHINE_ARCH=$MACHINE_ARCH" >> $GITHUB_ENV
+        fi
 
     - name: Fetch NetBSD sources and build cross toolchains
       shell: bash
@@ -109,6 +117,34 @@ runs:
         HOST_IP=$HOST_IP
         GUEST_IP=$GUEST_IP
         QEMU_BIN=$QEMU_BIN
+        EOF
+          ;;
+        evbarm)
+          QEMU_BIOS=$HOME/QEMU_EFI.fd
+          case "${MACHINE_ARCH}" in
+          aarch64)
+            echo "Installing qemu-system-aarch64..."
+            sudo apt-get install -qy qemu-system-aarch64
+            QEMU_BIN=qemu-system-aarch64
+            # See https://wiki.netbsd.org/ports/evbarm/qemu_arm/
+            curl -sSLo ${QEMU_BIOS} https://snapshots.linaro.org/components/kernel/leg-virt-tianocore-edk2-upstream/4480/QEMU-AARCH64/RELEASE_GCC5/QEMU_EFI.fd
+            ;;
+          *)
+            echo "Installing qemu-system-arm..."
+            sudo apt-get install -qy qemu-system-arm
+            QEMU_BIN=qemu-system-arm
+            curl -sSLo ${QEMU_BIOS} https://snapshots.linaro.org/components/kernel/leg-virt-tianocore-edk2-upstream/4480/QEMU-ARM/RELEASE_GCC5/QEMU_EFI.fd
+            ;;
+          esac
+          SSH_PORT=10020
+          HOST_IP=10.0.2.2
+          GUEST_IP=10.0.2.15
+          cat >> $GITHUB_ENV <<EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        QEMU_BIN=$QEMU_BIN
+        QEMU_BIOS=$QEMU_BIOS
         EOF
           ;;
         i386)
@@ -207,7 +243,7 @@ runs:
       run: |
         echo "Booting NetBSD on the emulator..."
         case "${MACHINE}" in
-        alpha|i386|sparc|sparc64)
+        alpha|evbarm|i386|sparc|sparc64)
           sh ${GITHUB_ACTION_PATH}/scripts/start-qemu.sh
           ;;
         vax)

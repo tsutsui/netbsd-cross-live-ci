@@ -39,6 +39,24 @@ alpha)
 	QEMU_MD_OPT="-kernel $TARGETROOTDIR/netbsd -append \"rootdev=/dev/wd0\""
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-alpha
 	;;
+evbarm)
+	DRIVEIF="virtio"
+	NETMODEL="virtio"
+	if [ -z "${QEMU_BIOS}" ]; then
+		QEMU_BIOS="QEMU_EFI.fd"
+	fi
+	QEMU_MD_OPT="-M virt -bios ${QEMU_BIOS}"
+	case "${MACHINE_ARCH}" in
+		aarch64)
+		QEMU_MD_OPT="${QEMU_MD_OPT} -cpu cortex-a53"
+		[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-aarch64
+		;;
+		*)
+		QEMU_MD_OPT="${QEMU_MD_OPT} -cpu cortex-a15"
+		[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-arm
+		;;
+	esac
+	;;
 i386)
 	DRIVEIF="virtio"
 	NETMODEL="virtio"

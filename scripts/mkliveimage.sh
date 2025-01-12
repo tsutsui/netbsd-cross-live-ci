@@ -95,6 +95,7 @@ amd64)
  RTC_LOCALTIME=yes	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=bootxx_ffsv1
  SECONDARY_BOOT=boot
+ BOOTSPEC="./boot type=file mode=0444"
  SECONDARY_BOOT_ARG= # nothing
  EFIBOOT="bootx64.efi bootia32.efi"
  INSTALLBOOTOPTIONS="-v -o console=com0"	# to use serial console
@@ -102,6 +103,46 @@ amd64)
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
  #HOST_IP=		# XXX check qemu settings
+ ;;
+evbarm)
+ if [ -z "$MACHINE_ARCH" ]; then
+  MACHINE_ARCH=earmv7hf
+ fi
+ RELEASEMACHINEDIR=${MACHINE}-${MACHINE_ARCH}
+ if [ -z "${MACHINE_ARCH##*eb}" ]; then
+  TARGET_ENDIAN=be
+ else
+  TARGET_ENDIAN=le
+ fi
+ if [ "$MACHINE_ARCH" = "aarch64" ]; then
+  MACHINE_GNU_PLATFORM=aarch64--netbsd		# for fdisk(8)
+  KERN_SET=kern-GENERIC64
+  SUFFIX_SETS=tar.xz
+  MAKEFSOPTIONS="-o version=2"
+  EFIBOOT="bootaa64.efi"
+ else
+  MACHINE_GNU_PLATFORM=arm--netbsdelf		# for fdisk(8)
+  KERN_SET=kern-GENERIC
+  SUFFIX_SETS=tgz
+  EFIBOOT="bootarm.efi"
+ fi
+ EXTRA_SETS= # nothing
+ RAW_PART=2		# raw partition is c:
+ USE_MBR=no
+ USE_GPT=yes
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ #PRIMARY_BOOT=bootxx
+ #SECONDARY_BOOT=boot
+ #SECONDARY_BOOT_ARG=/boot
+ BOOTSPEC="./boot type=dir mode=0755"
+ #INSTALLBOOTOPTIONS="-v"
+ #INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemuarm
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# simh NAT default
+ fi
  ;;
 i386)
  MACHINE_ARCH=i386
@@ -143,6 +184,7 @@ sparc)
  PRIMARY_BOOT=bootxx
  SECONDARY_BOOT=boot
  SECONDARY_BOOT_ARG=/boot
+ BOOTSPEC="./boot type=file mode=0444"
  INSTALLBOOTOPTIONS="-v"
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemusparc
@@ -188,6 +230,7 @@ vax)
  RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
  PRIMARY_BOOT=sdboot
  #SECONDARY_BOOT=boot	# /boot is in base.tgz
+ BOOTSPEC="./boot type=file mode=0444"
  #SECONDARY_BOOT_ARG= # nothing
  INSTALLBOOTOPTIONS="-v"
  INSTALLBOOT_AFTER_DISKLABEL=yes
@@ -202,6 +245,10 @@ vax)
 	exit 1
 	;;
 esac
+
+if [ -z "${RELEASEMACHINEDIR}" ]; then
+	RELEASEMACHINEDIR=${MACHINE}
+fi
 
 if [ -z ${HOST_IP} ]; then
 	echo "HOST_IP is not set"
@@ -348,7 +395,7 @@ ${MKDIR} -p ${WORKDIR}
 #
 # fetch and extract binary sets
 #
-URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${MACHINE}/binary/sets
+URL_SETS=http://${FTPHOST}/${RELEASEDIR}/${RELEASEMACHINEDIR}/binary/sets
 #SETS="${KERN_SET} modules base rescue etc comp games gpufw man misc tests text xbase xcomp xetc xfont xserver ${EXTRA_SETS}"
 #SETS="${KERN_SET} modules base rescue etc comp ${EXTRA_SETS}"
 #SETS="${KERN_SET} base rescue etc comp ${EXTRA_SETS}"
@@ -484,7 +531,7 @@ ${SH} ${TARGETROOTDIR}/dev/MAKEDEV -s all | \
 	${TOOL_SED} -e '/^\. type=dir/d' -e 's,^\.,./dev,' >> ${WORKSPEC}
 # spec for optional files/dirs
 ${CAT} >> ${WORKSPEC} <<EOF
-./boot				type=file mode=0444
+${BOOTSPEC}
 ./cdrom				type=dir  mode=0755
 ./kern				type=dir  mode=0755
 ./netbsd			type=file mode=0755
