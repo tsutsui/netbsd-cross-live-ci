@@ -261,6 +261,11 @@ MKDIR=mkdir
 RM=rm
 SH=sh
 TAR=tar
+if [ "$SUFFIX_SETS" = "tar.xz" ]; then
+	TAR_FILTER="-J"
+else
+	TAR_FILTER="-z"
+fi
 TOUCH=touch
 
 [ -z "${TARGETROOTDIR}" ] && TARGETROOTDIR=$HOSTHOME/targetroot.${MACHINE}
@@ -355,7 +360,7 @@ for set in ${SETS}; do
 	echo "Fetch and extract ${set}.${SUFFIX_SETS}..."
 	${FTP} ${FTP_OPTIONS} \
 	    ${URL_SETS}/${set}.${SUFFIX_SETS} \
-	    | ${TAR} -C ${TARGETROOTDIR} -zxf - \
+	    | ${TAR} -C ${TARGETROOTDIR} ${TAR_FILTER} -xf - \
 	    || err ${FTP}
 done
 
