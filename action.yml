@@ -87,11 +87,23 @@ runs:
         case "${MACHINE}" in
         alpha)
           echo "Installing qemu-system-alpha..."
-          sudo apt-get install -qy qemu-system-alpha
+          # sudo apt-get install -qy qemu-system-alpha
+          # qemu 8.2.2 (from ubuntu 24.04 LTS) cannot run NetBSD/alpha.
+          # See https://raymii.org/s/articles/NetBSD_on_QEMU_Alpha.html
+          sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update
+          sudo apt-get build-dep -qy qemu
+          git clone https://gitlab.com/qemu-project/qemu.git
+          (cd qemu && git checkout v9.1.2)	# as tested on pkgsrc-2024Q4
+          (cd qemu && curl -sSL https://raw.githubusercontent.com/NetBSD/pkgsrc/refs/heads/pkgsrc-2024Q4/emulators/qemu/patches/patch-hw_rtc_mc146818rtc.c | patch -p0)
+          (cd qemu && git submodule init && git submodule update --recursive)
+          JOBS=4
+          (cd qemu && sh configure --target-list=alpha-softmmu && make -j $JOBS)
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
-          QEMU_BIN=qemu-system-alpha
+          #QEMU_BIN=qemu-system-alpha
+          QEMU_BIN=$HOME/qemu/build/qemu-system-alpha
           cat >> $GITHUB_ENV <<EOF
         SSH_PORT=$SSH_PORT
         HOST_IP=$HOST_IP
