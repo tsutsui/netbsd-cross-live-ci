@@ -49,6 +49,12 @@ amd64)
 	NETMODEL="virtio"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
 	;;
+sparc)
+	QEMU_MEM=256
+	DRIVEIF="scsi"
+	NETMODEL="lance"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc
+	;;
 *)
 	echo "MACHINE \"${MACHINE}\" is not supported"
 	exit 1
@@ -58,12 +64,15 @@ esac
 if [ -z "${SSH_PORT}" ]; then
 	SSH_PORT=10020
 fi
+if [ -z "${QEMU_MEM}" ]; then
+	QEMU_MEM=1024
+fi
 if [ ! -x "$(which ${QEMU_BIN})" ]; then
 	echo "${QEMU_BIN} is not installed."
 	exit 1
 fi
 
-QEMU_OPT="-m 1024 -nographic -drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe -net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
+QEMU_OPT="-m ${QEMU_MEM} -nographic -drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe -net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
 
 EMULATOR=qemu
 BOOTLOG="${EMULATOR}.log"

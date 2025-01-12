@@ -129,6 +129,28 @@ i386)
   HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
+sparc)
+ MACHINE_ARCH=sparc
+ MACHINE_GNU_PLATFORM=sparc--netbsdelf		# for fdisk(8)
+ TARGET_ENDIAN=be
+ KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tgz
+ EXTRA_SETS= # nothing
+ RAW_PART=2		# raw partition is c:
+ USE_MBR=no
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ PRIMARY_BOOT=bootxx
+ SECONDARY_BOOT=boot
+ SECONDARY_BOOT_ARG=/boot
+ INSTALLBOOTOPTIONS="-v"
+ INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemusparc
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# simh NAT default
+ fi
+ ;;
 vax)
  MACHINE_ARCH=vax
  MACHINE_GNU_PLATFORM=vax--netbsdelf		# for fdisk(8)
