@@ -85,7 +85,7 @@ runs:
         mv usr/src $NETBSDSRCDIR
         JOBS=4
         echo "Building NetBSD cross toolchains..."
-        (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE -U -u -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
+        (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE -U -u -N 0 -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
     - name: Prepare emulator and environment
       shell: bash
