@@ -57,6 +57,12 @@ evbarm)
 		;;
 	esac
 	;;
+hppa)
+	QEMU_MEM=512
+	DRIVEIF="scsi"
+	NETMODEL="tulip"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-hppa
+	;;
 i386)
 	DRIVEIF="virtio"
 	NETMODEL="virtio"

@@ -144,6 +144,30 @@ evbarm)
   HOST_IP=10.0.2.2	# simh NAT default
  fi
  ;;
+hppa)
+ IMAGEMB=2000		# firmware has 2GB limit to load bootloader
+ MACHINE_ARCH=hppa
+ MACHINE_GNU_PLATFORM=hppa--netbsdelf		# for fdisk(8)
+ TARGET_ENDIAN=be
+ KERN_SET=kern-GENERIC
+ SUFFIX_SETS=tgz
+ EXTRA_SETS= # nothing
+ RAW_PART=2		# raw partition is c:
+ USE_MBR=no
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ PRIMARY_BOOT=xxboot
+ SECONDARY_BOOT=boot
+ #SECONDARY_BOOT_ARG=/boot
+ BOOTSPEC="./boot type=file mode=0444"
+ INSTALLBOOTOPTIONS="-v"
+ INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemuparisc
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# simh NAT default
+ fi
+ ;;
 i386)
  MACHINE_ARCH=i386
  MACHINE_GNU_PLATFORM=i486--netbsdelf		# for fdisk(8)
@@ -344,7 +368,9 @@ WORKDIR=$HOSTHOME/work.${MACHINE}
 #
 # target image size settings
 #
-IMAGEMB=5120			# 5120MB (4GB isn't enough for 8.0 + 2018Q2)
+if [ -z "$IMAGEMB" ]; then
+	IMAGEMB=5120		# 5120MB
+fi
 #SWAPMB=512			# 512MB
 SWAPMB=0			# no swap
 
