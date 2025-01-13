@@ -67,6 +67,12 @@ amd64)
 	NETMODEL="virtio"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
 	;;
+macppc)
+	QEMU_MEM=256
+	DRIVEIF="ide"
+	NETMODEL="e1000"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-ppc
+	;;
 sparc)
 	QEMU_MEM=256
 	DRIVEIF="scsi"

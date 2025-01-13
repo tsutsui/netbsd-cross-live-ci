@@ -161,6 +161,20 @@ runs:
         QEMU_BIN=$QEMU_BIN
         EOF
           ;;
+        macppc)
+          echo "Installing qemu-system-ppc..."
+          sudo apt-get install -qy qemu-system-ppc
+          SSH_PORT=10020
+          HOST_IP=10.0.2.2
+          GUEST_IP=10.0.2.15
+          QEMU_BIN=qemu-system-ppc
+          cat >> $GITHUB_ENV <<EOF
+        SSH_PORT=$SSH_PORT
+        HOST_IP=$HOST_IP
+        GUEST_IP=$GUEST_IP
+        QEMU_BIN=$QEMU_BIN
+        EOF
+          ;;
         sparc)
           echo "Installing qemu-system-sparc..."
           sudo apt-get install -qy qemu-system-sparc
@@ -243,7 +257,7 @@ runs:
       run: |
         echo "Booting NetBSD on the emulator..."
         case "${MACHINE}" in
-        alpha|evbarm|i386|sparc|sparc64)
+        alpha|evbarm|i386|macppc|sparc|sparc64)
           sh ${GITHUB_ACTION_PATH}/scripts/start-qemu.sh
           ;;
         vax)
