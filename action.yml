@@ -32,11 +32,11 @@ runs:
       shell: bash
       run: |
         echo "Update host packages"
-        sudo apt-get purge firefox || true
-        sudo apt-get autoremove -y
-        sudo apt-get update -q
-        sudo apt-get upgrade -qy
-        sudo apt-get install -qy build-essential
+        sudo apt-get purge -qq firefox || true
+        sudo apt-get autoremove -qq -y
+        sudo apt-get update -qq
+        sudo apt-get upgrade -qq -y
+        sudo apt-get install -qq -y build-essential
 
     - uses: actions/checkout@v4
 
@@ -95,12 +95,12 @@ runs:
         case "${MACHINE}" in
         alpha)
           echo "Installing qemu-system-alpha..."
-          # sudo apt-get install -qy qemu-system-alpha
+          # sudo apt-get install -qq -y qemu-system-alpha
           # qemu 8.2.2 (from ubuntu 24.04 LTS) cannot run NetBSD/alpha.
           # See https://raymii.org/s/articles/NetBSD_on_QEMU_Alpha.html
           sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
-          sudo apt-get update
-          sudo apt-get build-dep -qy qemu
+          sudo apt-get -qq update
+          sudo apt-get build-dep -qq -yy qemu
           git clone https://gitlab.com/qemu-project/qemu.git
           (cd qemu && git checkout v9.1.2)	# as tested on pkgsrc-2024Q4
           (cd qemu && curl -sSL https://raw.githubusercontent.com/NetBSD/pkgsrc/refs/heads/pkgsrc-2024Q4/emulators/qemu/patches/patch-hw_rtc_mc146818rtc.c | patch -p0)
@@ -124,14 +124,14 @@ runs:
           case "${MACHINE_ARCH}" in
           aarch64)
             echo "Installing qemu-system-aarch64..."
-            sudo apt-get install -qy qemu-system-aarch64
+            sudo apt-get install -qq -y qemu-system-aarch64
             QEMU_BIN=qemu-system-aarch64
             # See https://wiki.netbsd.org/ports/evbarm/qemu_arm/
             curl -sSLo ${QEMU_BIOS} https://snapshots.linaro.org/components/kernel/leg-virt-tianocore-edk2-upstream/4480/QEMU-AARCH64/RELEASE_GCC5/QEMU_EFI.fd
             ;;
           *)
             echo "Installing qemu-system-arm..."
-            sudo apt-get install -qy qemu-system-arm
+            sudo apt-get install -qq -y qemu-system-arm
             QEMU_BIN=qemu-system-arm
             curl -sSLo ${QEMU_BIOS} https://snapshots.linaro.org/components/kernel/leg-virt-tianocore-edk2-upstream/4480/QEMU-ARM/RELEASE_GCC5/QEMU_EFI.fd
             ;;
@@ -149,7 +149,7 @@ runs:
           ;;
         hppa)
           echo "Installing qemu-system-hppa..."
-          sudo apt-get install -qy qemu-system-hppa
+          sudo apt-get install -qq -y qemu-system-hppa
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
@@ -163,7 +163,7 @@ runs:
           ;;
         i386)
           echo "Installing qemu-system-i386..."
-          sudo apt-get install -qy qemu-system-i386
+          sudo apt-get install -qq -y qemu-system-i386
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
@@ -177,7 +177,7 @@ runs:
           ;;
         macppc)
           echo "Installing qemu-system-ppc..."
-          sudo apt-get install -qy qemu-system-ppc
+          sudo apt-get install -qq -y qemu-system-ppc
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
@@ -191,7 +191,7 @@ runs:
           ;;
         sparc)
           echo "Installing qemu-system-sparc..."
-          sudo apt-get install -qy qemu-system-sparc
+          sudo apt-get install -qq -y qemu-system-sparc
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
@@ -205,7 +205,7 @@ runs:
           ;;
         sparc64)
           echo "Installing qemu-system-sparc64..."
-          sudo apt-get install -qy qemu-system-sparc64
+          sudo apt-get install -qq -y qemu-system-sparc64
           SSH_PORT=10020
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
@@ -219,7 +219,7 @@ runs:
           ;;
         vax)
           echo "Installing dependencies for simh..."
-          sudo apt-get install -qy libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
+          sudo apt-get install -qq -y libpcap-dev libpcre3-dev vde2 libsdl2-dev libsdl2-ttf-dev libedit-dev
           echo "Cloning simh repository and building emulator..."
           git clone https://github.com/open-simh/simh
           (cd simh && make TESTS=0 microvax3900)
