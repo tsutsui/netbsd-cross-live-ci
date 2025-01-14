@@ -437,6 +437,18 @@ done
 # XXX /var/spool/ftp/hidden is unreadable
 chmod u+r ${TARGETROOTDIR}/var/spool/ftp/hidden
 
+# XXX replace secondary bootloader /usr/mdec/ofwboot with the -current one
+#     to make a created image bootable it with OpenBIOS on qemu-system-ppc
+if [ "${MACHINE}" = "macppc" ]; then
+	echo "Fetch and extract ${SECONDARY_BOOT} from HEAD..."
+	HEAD_URL_SETS=https://nycdn.NetBSD.org/pub/NetBSD-daily/HEAD/latest/${MACHINE}/binary/sets
+	${FTP} ${FTP_OPTIONS} \
+	    ${HEAD_URL_SETS}/base.${SUFFIX_SETS} \
+	    | ${TAR} -C ${TARGETROOTDIR} ${TAR_FILTER} -xf - \
+	    ./usr/mdec/${SECONDARY_BOOT} \
+	    || err ${FTP}
+fi
+
 # copy secondary boot for bootstrap
 # XXX probabry more machine dependent
 if [ ! -z ${SECONDARY_BOOT} ]; then
