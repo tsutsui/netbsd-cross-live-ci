@@ -70,7 +70,7 @@ amd64)
 macppc)
 	QEMU_MEM=256
 	DRIVEIF="ide"
-	NETMODEL="e1000"
+	NETMODEL="e1000"	# XXX sungem doesn't work on qemu 8.2.2
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-ppc
 	;;
 sparc)
