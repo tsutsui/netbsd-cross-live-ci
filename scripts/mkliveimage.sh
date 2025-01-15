@@ -144,6 +144,46 @@ evbarm)
   HOST_IP=10.0.2.2	# simh NAT default
  fi
  ;;
+evbmips)
+ IMAGEMB=1280
+ if [ -z "$MACHINE_ARCH" ]; then
+  MACHINE_ARCH=mipsel
+ fi
+ RELEASEMACHINEDIR=${MACHINE}-${MACHINE_ARCH}
+ if [ -z "${MACHINE_ARCH##*eb}" ]; then
+  TARGET_ENDIAN=be
+ else
+  TARGET_ENDIAN=le
+ fi
+ if [ "$MACHINE_ARCH" = "mips64el" ]; then
+  MACHINE_GNU_PLATFORM=mips64el--netbsd		# for fdisk(8)
+  #KERN_SET=kern-MALTA64
+  KERN_SET=kern-MIPSSIM64
+  MAKEFSOPTIONS="-o version=2"
+ else
+  MACHINE_GNU_PLATFORM=mipsel--netbsdelf	# for fdisk(8)
+  #KERN_SET=kern-MALTA
+  KERN_SET=kern-MIPSSIM
+ fi
+ SUFFIX_SETS=tgz
+ EXTRA_SETS= # nothing
+ RAW_PART=3		# raw partition is c:
+ USE_MBR=no
+ USE_GPT=no
+ OMIT_SWAPIMG=no	# include swap partition in output image for emulators
+ RTC_LOCALTIME=no	# use rtclocaltime=YES in rc.d(8) for Windows machines
+ #PRIMARY_BOOT=bootxx
+ #SECONDARY_BOOT=boot
+ #SECONDARY_BOOT_ARG=/boot
+ #BOOTSPEC="./boot type=file mode=0644"
+ #INSTALLBOOTOPTIONS="-v"
+ #INSTALLBOOT_AFTER_DISKLABEL=no
+ VMHOSTNAME=qemumips
+ DISKNAME=netbsd-ci-${MACHINE}
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# simh NAT default
+ fi
+ ;;
 hppa)
  IMAGEMB=2000		# firmware has 2GB limit to load bootloader
  MACHINE_ARCH=hppa
