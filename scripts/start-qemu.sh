@@ -34,14 +34,18 @@ fi
 	# for debug
 case "${MACHINE}" in
 alpha)
-	DRIVEIF="ide"
-	NETMODEL="e1000"
+	DISKDEV="ide-hd,bus=ide.0"
+	NETDEV="e1000"
+	#DRIVEIF="ide"
+	#NETMODEL="e1000"
 	QEMU_MD_OPT="-kernel $TARGETROOTDIR/netbsd -append \"rootdev=/dev/wd0\""
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-alpha
 	;;
 evbarm)
-	DRIVEIF="virtio"
-	NETMODEL="virtio"
+	DISKDEV="virtio-blk-pci"
+	NETDEV="virtio-net-pci"
+	#DRIVEIF="virtio"
+	#NETMODEL="virtio"
 	if [ -z "${QEMU_BIOS}" ]; then
 		QEMU_BIOS="QEMU_EFI.fd"
 	fi
@@ -59,13 +63,18 @@ evbarm)
 	;;
 hppa)
 	QEMU_MEM=512
+	# -device format doesn't work
+	#DISKDEV="scsi-hd,bus=scsibus.0"
+	#NETDEV="tulip"
 	DRIVEIF="scsi"
 	NETMODEL="tulip"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-hppa
 	;;
 i386)
-	DRIVEIF="virtio"
-	NETMODEL="virtio"
+	DISKDEV="virtio-blk-pci"
+	NETDEV="virtio-net-pci"
+	#DRIVEIF="virtio"
+	#NETMODEL="virtio"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-i386
 	;;
 amd64)
@@ -75,18 +84,26 @@ amd64)
 	;;
 macppc)
 	QEMU_MEM=256
-	DRIVEIF="ide"
-	NETMODEL="e1000"	# XXX sungem doesn't work on qemu 8.2.2
+	DISKDEV="ide-hd,bus=ide.0"
+	NETDEV="e1000"
+	#DRIVEIF="ide"
+	#NETMODEL="e1000"	# XXX sungem doesn't work on qemu 8.2.2
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-ppc
 	;;
 sparc)
 	QEMU_MEM=256
+	# -device format doesn't work
+	#DISKDEV="scsi-hd"
+	#NETDEV="lance"
 	DRIVEIF="scsi"
 	NETMODEL="lance"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc
 	;;
 sparc64)
 	QEMU_MEM=256
+	# -device format doesn't work
+	#DISKDEV="ide-hd"
+	#NETDEV="sunhme,bus=pci.0"
 	DRIVEIF="ide"
 	NETMODEL="sunhme"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc64
@@ -108,7 +125,18 @@ if [ ! -x "$(which ${QEMU_BIN})" ]; then
 	exit 1
 fi
 
-QEMU_OPT="-m ${QEMU_MEM} -nographic -drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe -net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
+if [ -n "${DISKDEV}" ] && [ -n "${NETDEV}" ]; then
+	echo use new -device settings
+	# use new -device settings
+	QEMU_DISK_OPT="-drive file=${IMAGE},media=disk,format=raw,index=0,if=none,id=disk -device ${DISKDEV},drive=disk"
+	QEMU_NET_OPT="-netdev user,id=net,hostfwd=tcp::${SSH_PORT}-:22 -device ${NETDEV},netdev=net"
+else
+	echo use old "-drive if=foo" and "net nic,model=bar" settings
+	# use old "-drive if=foo" and "net nic,model=bar" settings
+	QEMU_DISK_OPT="-drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe"
+	QEMU_NET_OPT="-net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
+fi
+QEMU_OPT="-m ${QEMU_MEM} -nographic ${QEMU_DISK_OPT} ${QEMU_NET_OPT}"
 
 EMULATOR=qemu
 BOOTLOG="${EMULATOR}.log"
