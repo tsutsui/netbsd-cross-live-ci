@@ -145,7 +145,6 @@ evbarm)
  fi
  ;;
 evbmips)
- IMAGEMB=1280
  if [ -z "$MACHINE_ARCH" ]; then
   MACHINE_ARCH=mipsel
  fi
@@ -822,7 +821,7 @@ EOF
 		${TOOL_SED} -i -e "s/^c: /#c: /" -e "s/^d: /c: /" ${WORKLABEL}
 	fi
 
-	${TOOL_DISKLABEL} -R -F -M ${MACHINE} ${WORKIMG} ${WORKLABEL} \
+	${TOOL_DISKLABEL} -R -F -M ${MACHINE} -B ${TARGET_ENDIAN} ${WORKIMG} ${WORKLABEL} \
 	    || err ${TOOL_DISKLABEL}
 fi
 
