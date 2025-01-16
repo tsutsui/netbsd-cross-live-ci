@@ -131,12 +131,12 @@ if [ -n "${DISKDEV}" ] && [ -n "${NETDEV}" ]; then
 	echo use new -device settings
 	# use new -device settings
 	QEMU_DISK_OPT="-drive file=${IMAGE},media=disk,format=raw,index=0,if=none,id=disk -device ${DISKDEV},drive=disk"
-	QEMU_NET_OPT="-netdev user,id=net,hostfwd=tcp::${SSH_PORT}-:22 -device ${NETDEV},netdev=net"
+	QEMU_NET_OPT="-netdev user,ipv6=off,id=net,hostfwd=tcp::${SSH_PORT}-:22 -device ${NETDEV},netdev=net"
 else
 	echo use old "-drive if=foo" and "net nic,model=bar" settings
 	# use old "-drive if=foo" and "net nic,model=bar" settings
 	QEMU_DISK_OPT="-drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe"
-	QEMU_NET_OPT="-net nic,model=${NETMODEL} -net user,hostfwd=tcp::${SSH_PORT}-:22"
+	QEMU_NET_OPT="-net nic,model=${NETMODEL} -net user,ipv6=off,hostfwd=tcp::${SSH_PORT}-:22"
 fi
 QEMU_OPT="-m ${QEMU_MEM} -nographic ${QEMU_DISK_OPT} ${QEMU_NET_OPT}"
 
