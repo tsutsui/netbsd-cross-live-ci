@@ -26,6 +26,7 @@ jobs:
          prepare: |
            ifconfig -a
            netstat -r
+           nslookup cdn.NetBSD.org
            pkg_add tcsh
 
          configure: |
