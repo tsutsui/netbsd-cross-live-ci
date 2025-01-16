@@ -41,6 +41,13 @@ alpha)
 	QEMU_MD_OPT="-kernel $TARGETROOTDIR/netbsd -append \"rootdev=/dev/wd0\""
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-alpha
 	;;
+amd64)
+	DISKDEV="virtio-blk-pci"
+	NETDEV="virtio-net-pci"
+	#DRIVEIF="virtio"
+	#NETMODEL="virtio"
+	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
+	;;
 evbarm)
 	DISKDEV="virtio-blk-pci"
 	NETDEV="virtio-net-pci"
@@ -76,11 +83,6 @@ i386)
 	#DRIVEIF="virtio"
 	#NETMODEL="virtio"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-i386
-	;;
-amd64)
-	DRIVEIF="virtio"
-	NETMODEL="virtio"
-	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
 	;;
 macppc)
 	QEMU_MEM=256
