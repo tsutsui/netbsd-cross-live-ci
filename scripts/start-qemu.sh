@@ -68,6 +68,28 @@ evbarm)
 		;;
 	esac
 	;;
+evbmips)
+	DISKDEV="virtio-blk-pci"
+	NETDEV="virtio-net-pci"
+	# cannot specify virtio-blk-device and virtio-net-device in old options
+	#DRIVEIF="virtio"
+	#NETMODEL="virtio"
+	QEMU_MD_OPT="-M mipssim-virtio"
+	case "${MACHINE_ARCH}" in
+		mips64el)
+		QEMU_MD_OPT="${QEMU_MD_OPT} -cpu 5Kc"
+		[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-mips64el
+		;;
+		mipsel)
+		QEMU_MD_OPT="${QEMU_MD_OPT} -cpu 24Kc"
+		[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-mipsel
+		;;
+		*)
+		echo "evbmips MACHINE_ARCH \"${MACHINE_ARCH}\" is not supported"
+		exit 1
+		;;
+	esac
+	;;
 hppa)
 	QEMU_MEM=512
 	# -device format doesn't work
