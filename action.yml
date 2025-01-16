@@ -46,6 +46,7 @@ runs:
         echo "Set environment variables"
         HOSTHOME=$HOME
         MACHINE=${{ inputs.machine }}
+        RELEASEMACHINEDIR=${MACHINE}
         # check in case of "evbarm-aarch64" or "evbarm-earmv7hf" etc.
         if [ "${MACHINE#*-}" != "${MACHINE}" ]; then
           MACHINE_ARCH="${MACHINE#*-}"
@@ -55,12 +56,13 @@ runs:
         FTPHOST=${{ inputs.ftphost }}
         RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
         NETBSDSRCDIR=$HOME/netbsd-src
-        TOOLDIR=$NETBSDSRCDIR/tooldir.${MACHINE}
-        IMAGE=$HOME/netbsd-${RELEASE}-${MACHINE}.img
-        TARGETROOTDIR=$HOME/targetroot.${MACHINE}
+        TOOLDIR=$NETBSDSRCDIR/tooldir.${RELEASEMACHINEDIR}
+        IMAGE=$HOME/netbsd-${RELEASE}-${RELEASEMACHINEDIR}.img
+        TARGETROOTDIR=$HOME/targetroot.${RELEASEMACHINEDIR}
         cat >> $GITHUB_ENV <<EOF
         HOSTHOME=$HOME
         MACHINE=$MACHINE
+        RELEASEMACHINEDIR=${RELEASEMACHINEDIR}
         RELEASE=$RELEASE
         FTPHOST=$FTPHOST
         RELEASEDIR=$RELEASEDIR
@@ -85,7 +87,8 @@ runs:
         mv usr/src $NETBSDSRCDIR
         JOBS=4
         echo "Building NetBSD cross toolchains..."
-        (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE -U -u -N 0 -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
+        [ -n "${MACHINE_ARCH}" ] && ARCH_OPT="-a ${MACHINE_ARCH}"
+        (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE $ARCH_OPT -U -u -N 0 -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
 
     - name: Prepare emulator and environment
       shell: bash
