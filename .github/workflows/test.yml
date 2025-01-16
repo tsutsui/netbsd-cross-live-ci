@@ -24,6 +24,8 @@ jobs:
          release: "10.1"
 
          prepare: |
+           ifconfig -a
+           netstat -r
            pkg_add tcsh
 
          configure: |
