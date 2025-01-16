@@ -401,8 +401,8 @@ else
 fi
 TOUCH=touch
 
-[ -z "${TARGETROOTDIR}" ] && TARGETROOTDIR=$HOSTHOME/targetroot.${MACHINE}
-WORKDIR=$HOSTHOME/work.${MACHINE}
+[ -z "${TARGETROOTDIR}" ] && TARGETROOTDIR=$HOSTHOME/targetroot.${RELEASEMACHINEDIR}
+WORKDIR=$HOSTHOME/work.${RELEASEMACHINEDIR}
 
 #
 # target image size settings
