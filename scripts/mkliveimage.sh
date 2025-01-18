@@ -43,6 +43,10 @@ if [ -z ${HOSTHOME} ]; then
 	echo "HOSTHOME is not set"
 	exit 1
 fi
+if ! command -v ssh-keygen > /dev/null 2>&1; then
+	echo "ssh-keygen command is not found."
+	exit 1
+fi
 if [ -z ${RELEASEDIR} ]; then
 	RELEASEDIR=pub/NetBSD/NetBSD-${RELEASE}
 fi
