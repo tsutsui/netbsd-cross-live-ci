@@ -114,7 +114,7 @@ evbarm)
  else
   TARGET_ENDIAN=le
  fi
- if [ "$MACHINE_ARCH" = "aarch64" ]; then
+ if [ "${MACHINE_ARCH%eb}" = "aarch64" ]; then
   MACHINE_GNU_PLATFORM=aarch64--netbsd		# for fdisk(8)
   KERN_SET=kern-GENERIC64
   SUFFIX_SETS=tar.xz

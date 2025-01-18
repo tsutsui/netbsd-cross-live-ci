@@ -58,7 +58,7 @@ evbarm)
 	fi
 	QEMU_MD_OPT="-M virt -bios ${QEMU_BIOS}"
 	case "${MACHINE_ARCH}" in
-		aarch64)
+		aarch64*)
 		QEMU_MD_OPT="${QEMU_MD_OPT} -cpu cortex-a53"
 		[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-aarch64
 		;;
