@@ -49,8 +49,8 @@ amd64)
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-x86_64
 	;;
 evbarm)
-	DISKDEV="virtio-blk-pci"
-	NETDEV="virtio-net-pci"
+	DISKDEV="virtio-blk-device"
+	NETDEV="virtio-net-device"
 	#DRIVEIF="virtio"
 	#NETMODEL="virtio"
 	if [ -z "${QEMU_BIOS}" ]; then
