@@ -69,8 +69,8 @@ evbarm)
 	esac
 	;;
 evbmips)
-	DISKDEV="virtio-blk-pci"
-	NETDEV="virtio-net-pci"
+	DISKDEV="virtio-blk-device"
+	NETDEV="virtio-net-device"
 	# cannot specify virtio-blk-device and virtio-net-device in old options
 	#DRIVEIF="virtio"
 	#NETMODEL="virtio"
