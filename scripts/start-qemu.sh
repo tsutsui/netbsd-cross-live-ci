@@ -144,7 +144,7 @@ fi
 if [ -z "${QEMU_MEM}" ]; then
 	QEMU_MEM=1024
 fi
-if [ ! -x "$(which ${QEMU_BIN})" ]; then
+if ! command -v "${QEMU_BIN}" > /dev/null 2>&1; then
 	echo "${QEMU_BIN} is not installed."
 	exit 1
 fi
@@ -182,6 +182,6 @@ while true; do
     exit 1
   fi
   sleep $INTERVAL
-  WAITSECONDS=$(($WAITSECONDS + $INTERVAL))
+  WAITSECONDS=$((WAITSECONDS + INTERVAL))
   echo "waiting $EMULATOR to reach multi-user ($WAITSECONDS s)"
 done

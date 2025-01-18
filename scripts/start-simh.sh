@@ -35,7 +35,7 @@ if [ -z "${SIMH_BIN}" ]; then
 	# for debug
 	SIMH_BIN=/usr/pkg/bin/simh-microvax3900
 fi
-if [ ! -x "$(which ${SIMH_BIN})" ]; then
+if ! command -v "${QEMU_BIN}" > /dev/null 2>&1; then
 	echo "${SIMH_BIN} is not installed."
 	exit 1
 fi
@@ -62,6 +62,6 @@ while true; do
     exit 1
   fi
   sleep $INTERVAL
-  WAITSECONDS=$(($WAITSECONDS + $INTERVAL))
+  WAITSECONDS=$((WAITSECONDS + INTERVAL))
   echo "waiting $EMULATOR to reach multi-user ($WAITSECONDS s)"
 done
