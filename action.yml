@@ -110,7 +110,7 @@ runs:
           (cd qemu && git submodule init && git submodule update --recursive)
           JOBS=4
           (cd qemu && sh configure --target-list=alpha-softmmu && make -j $JOBS)
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           #QEMU_BIN=qemu-system-alpha
@@ -139,7 +139,7 @@ runs:
             curl -sSLo ${QEMU_BIOS} https://snapshots.linaro.org/components/kernel/leg-virt-tianocore-edk2-upstream/4480/QEMU-ARM/RELEASE_GCC5/QEMU_EFI.fd
             ;;
           esac
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           cat >> $GITHUB_ENV <<EOF
@@ -153,7 +153,7 @@ runs:
         hppa)
           echo "Installing qemu-system-hppa..."
           sudo apt-get install -qq -y qemu-system-hppa
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           QEMU_BIN=qemu-system-hppa
@@ -167,7 +167,7 @@ runs:
         i386)
           echo "Installing qemu-system-i386..."
           sudo apt-get install -qq -y qemu-system-i386
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           QEMU_BIN=qemu-system-i386
@@ -181,7 +181,7 @@ runs:
         macppc)
           echo "Installing qemu-system-ppc..."
           sudo apt-get install -qq -y qemu-system-ppc
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           QEMU_BIN=qemu-system-ppc
@@ -195,7 +195,7 @@ runs:
         sparc)
           echo "Installing qemu-system-sparc..."
           sudo apt-get install -qq -y qemu-system-sparc
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           QEMU_BIN=qemu-system-sparc
@@ -209,7 +209,7 @@ runs:
         sparc64)
           echo "Installing qemu-system-sparc64..."
           sudo apt-get install -qq -y qemu-system-sparc64
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           QEMU_BIN=qemu-system-sparc64
@@ -226,7 +226,7 @@ runs:
           echo "Cloning simh repository and building emulator..."
           git clone https://github.com/open-simh/simh
           (cd simh && make TESTS=0 microvax3900)
-          SSH_PORT=10020
+          SSH_PORT=10022
           HOST_IP=10.0.2.2
           GUEST_IP=10.0.2.15
           SIMH_BIN=$HOME/simh/BIN/microvax3900

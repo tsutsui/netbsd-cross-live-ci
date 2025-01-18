@@ -139,7 +139,7 @@ sparc64)
 esac
 
 if [ -z "${SSH_PORT}" ]; then
-	SSH_PORT=10020
+	SSH_PORT=10022
 fi
 if [ -z "${QEMU_MEM}" ]; then
 	QEMU_MEM=1024
