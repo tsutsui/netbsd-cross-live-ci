@@ -79,16 +79,7 @@ runs:
       shell: bash
       run: |
         echo "Fetch NetBSD sources and build cross toolchains"
-        SRCSETS="gnusrc sharesrc src syssrc"
-        for SET in $SRCSETS; do
-          echo "Downloading and extracting $SET.tgz..."
-          curl -sSL https://$FTPHOST/$RELEASEDIR/source/sets/$SET.tgz | tar -zxf -
-        done
-        mv usr/src $NETBSDSRCDIR
-        JOBS=4
-        echo "Building NetBSD cross toolchains..."
-        [ -n "${MACHINE_ARCH}" ] && ARCH_OPT="-a ${MACHINE_ARCH}"
-        (cd $NETBSDSRCDIR && sh build.sh -m $MACHINE $ARCH_OPT -U -u -N 0 -j $JOBS -T $TOOLDIR -V MKGCC=no -V MKSHARE=no -V OBJMACHINE=1 tools)
+        sh ${GITHUB_ACTION_PATH}/scripts/buildtools.sh
 
     - name: Prepare emulator and environment
       shell: bash
