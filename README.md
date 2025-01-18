@@ -42,7 +42,7 @@ jobs:
       strategy:
       fail-fast: false
       matrix:
-        machine: [alpha, evbarm-aarch64, evbarm-earmv7hf, evbarm-earmv7hfeb, i386, macppc, sparc, sparc64, vax]
+        machine: [alpha, evbarm-aarch64, evbarm-earmv7hf, i386, macppc, sparc, sparc64, vax]
 
     steps:
       - name: Build project in NetBSD/${{ matrix.machine }} environment
@@ -65,7 +65,7 @@ jobs:
 
 ## Notes
 1. **Live Image Generation**: The NetBSD live image is generated dynamically during the workflow based on the specified NetBSD `release` sources downloaded from `ftphost`.
-2. **Emulator Setup**: simh is used to run the NetBSD/vax live image, and qemu is used to run NetBSD/evbarm, NetBSD/hppa, NetBSD/i386, NetBSD/macppc, NetBSD/sparc and NetBSD/sparc64. To run NetBSD/alpha, patched qemu-system-alpha binary is built during CI. Currently there is no NetBSD/hppa package binaries so tests that require `pkg_add` won't work.
+2. **Emulator Setup**: simh is used to run the NetBSD/vax live image, and qemu is used to run NetBSD/evbarm, NetBSD/hppa, NetBSD/i386, NetBSD/macppc, NetBSD/sparc and NetBSD/sparc64. To run NetBSD/alpha, patched qemu-system-alpha binary is built during CI. Currently there is no NetBSD/hppa or NetBSD/earmv7hfeb package binaries so tests that require `pkg_add` won't work.
 3. **PKG_PATH settings**: The default `PKG_PATH` environment variable is set in `/root/.profile`.
 
 ## License
