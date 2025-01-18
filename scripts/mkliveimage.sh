@@ -496,7 +496,7 @@ SETS="${KERN_SET} base etc comp misc text xbase xcomp xetc xserver ${EXTRA_SETS}
 ${RM} -rf ${TARGETROOTDIR}
 ${MKDIR} -p ${TARGETROOTDIR}
 for set in ${SETS}; do
-	echo "Fetch and extract ${set}.${SUFFIX_SETS}..."
+	echo "Downloading and extracting ${set}.${SUFFIX_SETS}..."
 	${FTP} ${FTP_OPTIONS} \
 	    ${URL_SETS}/${set}.${SUFFIX_SETS} \
 	    | ${TAR} -C ${TARGETROOTDIR} ${TAR_FILTER} -xf - \
@@ -509,7 +509,7 @@ chmod u+r ${TARGETROOTDIR}/var/spool/ftp/hidden
 # XXX replace secondary bootloader /usr/mdec/ofwboot with the -current one
 #     to make a created image bootable it with OpenBIOS on qemu-system-ppc
 if [ "${MACHINE}" = "macppc" ]; then
-	echo "Fetch and extract ${SECONDARY_BOOT} from HEAD..."
+	echo "Downloading and extracting ${SECONDARY_BOOT} from HEAD..."
 	HEAD_URL_SETS=https://nycdn.NetBSD.org/pub/NetBSD-daily/HEAD/latest/${MACHINE}/binary/sets
 	${FTP} ${FTP_OPTIONS} \
 	    ${HEAD_URL_SETS}/base.${SUFFIX_SETS} \
