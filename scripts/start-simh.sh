@@ -35,7 +35,7 @@ if [ -z "${SIMH_BIN}" ]; then
 	# for debug
 	SIMH_BIN=/usr/pkg/bin/simh-microvax3900
 fi
-if ! command -v "${QEMU_BIN}" > /dev/null 2>&1; then
+if ! command -v "${SIMH_BIN}" > /dev/null 2>&1; then
 	echo "${SIMH_BIN} is not installed."
 	exit 1
 fi
