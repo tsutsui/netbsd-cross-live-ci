@@ -18,7 +18,7 @@ and runs your project within the NetBSD environment.
 | `ftphost`      | No       | `cdn.NetBSD.org`| Hostname to download NetBSD source sets and binary sets from.  |
 | `prepare`      | No       | `true`          | Commands for preparation of builds (install necessary packages via `pkg_add` etc.) |
 | `configure`    | No       | `true`          | Commands for "configure" before builds (typically simple `configure` command) |
-| `preapre`      | No       | `make && make install`| Commands to build your project |
+| `build`        | No       | `make && make install`| Commands to build your project |
 
 ## Outputs
 
