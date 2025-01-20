@@ -16,7 +16,7 @@ and runs your project within the NetBSD environment.
 | `release`      | No       | `10.1`          | The NetBSD source version to use (e.g., `10.1`, `9.4`). |
 | `machine`      | Yes      |                 | The architecture of the NetBSD environment (currently `alpha`, `evbarm-aarch64`, `evbarm-earmv7hf`, `evbarm-earmv7hfeb`, `hppa`, `i386`, `macppc`, `sparc`, `sparc64` and `vax` are supported). |
 | `ftphost`      | No       | `cdn.NetBSD.org`| Hostname to download NetBSD source sets and binary sets from.  |
-| `preapre`      | No       | `true`          | Commands for preparation of builds (install necessary packages via `pkg_add` etc.) |
+| `prepare`      | No       | `true`          | Commands for preparation of builds (install necessary packages via `pkg_add` etc.) |
 | `configure`    | No       | `true`          | Commands for "configure" before builds (typically simple `configure` command) |
 | `preapre`      | No       | `make && make install`| Commands to build your project |
 
