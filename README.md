@@ -39,7 +39,7 @@ jobs:
   build-netbsd:
     runs-on: ubuntu-latest
     
-      strategy:
+    strategy:
       fail-fast: false
       matrix:
         machine: [alpha, evbarm-aarch64, evbarm-earmv7hf, i386, macppc, sparc, sparc64, vax]
