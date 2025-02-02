@@ -35,7 +35,8 @@ fi
 case "${MACHINE}" in
 alpha)
 	DISKDEV="ide-hd,bus=ide.0"
-	NETDEV="e1000"
+	NETDEV="tulip"
+	#NETDEV="e1000"
 	#DRIVEIF="ide"
 	#NETMODEL="e1000"
 	QEMU_MD_OPT="-kernel $TARGETROOTDIR/netbsd -append \"rootdev=/dev/wd0\""
