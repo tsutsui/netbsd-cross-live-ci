@@ -124,12 +124,15 @@ sparc)
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc
 	;;
 sparc64)
-	QEMU_MEM=256
-	# -device format doesn't work
-	#DISKDEV="ide-hd"
-	#NETDEV="sunhme,bus=pci.0"
-	DRIVEIF="ide"
-	NETMODEL="sunhme"
+	QEMU_MEM=512
+	# XXX: NetBSD/sparc64 doesn't recognize ld0 as a booted device (yet)
+	#DISKDEV="virtio-blk-pci,bus=pciB,bootindex=0"
+	DISKDEV="ide-hd,bus=ide.0"
+	# vioif(4) will also work, but use hme(4) for now
+	#NETDEV="virtio-net-pci,bus=pciB"
+	NETDEV="sunhme,bus=pciB"
+	#DRIVEIF="ide"
+	#NETMODEL="sunhme"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc64
 	;;
 *)
