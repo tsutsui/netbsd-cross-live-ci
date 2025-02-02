@@ -116,10 +116,10 @@ macppc)
 	;;
 sparc)
 	QEMU_MEM=256
-	# -device format doesn't work
-	#DISKDEV="scsi-hd"
+	# no pluggable "lance" device yet?
+	DISKDEV="scsi-hd,bus=scsi.0"
 	#NETDEV="lance"
-	DRIVEIF="scsi"
+	#DRIVEIF="scsi"
 	NETMODEL="lance"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-sparc
 	;;
@@ -149,13 +149,18 @@ if ! command -v "${QEMU_BIN}" > /dev/null 2>&1; then
 	exit 1
 fi
 
-if [ -n "${DISKDEV}" ] && [ -n "${NETDEV}" ]; then
-	# use new -device settings
+if [ -n "${DISKDEV}" ]; then
+	# use "-drive" and new pluggable "-device" settings
 	QEMU_DISK_OPT="-drive file=${IMAGE},media=disk,format=raw,index=0,if=none,id=disk ${BUS_OPT} -device ${DISKDEV},drive=disk"
+else
+	# use old "-drive if=foo" settings
+	QEMU_DISK_OPT="-drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe"
+fi
+if [ -n "${NETDEV}" ]; then
+	# use "-netdev" and new pluggabple "-device" settings
 	QEMU_NET_OPT="-netdev user,ipv6=off,id=net,hostfwd=tcp::${SSH_PORT}-:22 -device ${NETDEV},netdev=net"
 else
 	# use old "-drive if=foo" and "-net nic,model=bar" settings
-	QEMU_DISK_OPT="-drive file=${IMAGE},if=${DRIVEIF},index=0,media=disk,format=raw,cache=unsafe"
 	QEMU_NET_OPT="-net nic,model=${NETMODEL} -net user,ipv6=off,hostfwd=tcp::${SSH_PORT}-:22"
 fi
 QEMU_OPT="-m ${QEMU_MEM} -nographic ${QEMU_DISK_OPT} ${QEMU_NET_OPT}"
