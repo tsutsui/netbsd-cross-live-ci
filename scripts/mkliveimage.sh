@@ -106,7 +106,9 @@ amd64)
  INSTALLBOOT_AFTER_DISKLABEL=no
  VMHOSTNAME=qemupc
  DISKNAME=netbsd-ci-${MACHINE}
- #HOST_IP=		# XXX check qemu settings
+ if [ -z "${HOST_IP}" ] ; then
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
+ fi
  ;;
 evbarm)
  if [ -z "$MACHINE_ARCH" ]; then
@@ -145,7 +147,7 @@ evbarm)
  VMHOSTNAME=qemuarm
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 evbmips)
@@ -184,7 +186,7 @@ evbmips)
  VMHOSTNAME=qemumips
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 hppa)
@@ -208,7 +210,7 @@ hppa)
  VMHOSTNAME=qemuparisc
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 i386)
@@ -257,7 +259,7 @@ macppc)
  VMHOSTNAME=qemumac
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 sparc)
@@ -280,7 +282,7 @@ sparc)
  VMHOSTNAME=qemusparc
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 sparc64)
@@ -304,7 +306,7 @@ sparc64)
  VMHOSTNAME=qemusparc
  DISKNAME=netbsd-ci-${MACHINE}
  if [ -z "${HOST_IP}" ] ; then
-  HOST_IP=10.0.2.2	# simh NAT default
+  HOST_IP=10.0.2.2	# qemu "-nic user" NAT default
  fi
  ;;
 vax)
