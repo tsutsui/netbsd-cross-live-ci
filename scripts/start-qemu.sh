@@ -92,11 +92,11 @@ evbmips)
 	;;
 hppa)
 	QEMU_MEM=512
-	# -device format doesn't work
-	#DISKDEV="scsi-hd,bus=scsibus.0"
-	#NETDEV="tulip"
-	DRIVEIF="scsi"
-	NETMODEL="tulip"
+	BUS_OPT="-device lsi53c895a,id=scsi0"
+	DISKDEV="scsi-hd,bus=scsi0.0"
+	NETDEV="tulip"
+	#DRIVEIF="scsi"
+	#NETMODEL="tulip"
 	[ -z "${QEMU_BIN}" ] && QEMU_BIN=/usr/pkg/bin/qemu-system-hppa
 	;;
 i386)
@@ -151,7 +151,7 @@ fi
 
 if [ -n "${DISKDEV}" ] && [ -n "${NETDEV}" ]; then
 	# use new -device settings
-	QEMU_DISK_OPT="-drive file=${IMAGE},media=disk,format=raw,index=0,if=none,id=disk -device ${DISKDEV},drive=disk"
+	QEMU_DISK_OPT="-drive file=${IMAGE},media=disk,format=raw,index=0,if=none,id=disk ${BUS_OPT} -device ${DISKDEV},drive=disk"
 	QEMU_NET_OPT="-netdev user,ipv6=off,id=net,hostfwd=tcp::${SSH_PORT}-:22 -device ${NETDEV},netdev=net"
 else
 	# use old "-drive if=foo" and "-net nic,model=bar" settings
